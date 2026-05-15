@@ -352,14 +352,14 @@ the target.
 
 ```js
 function twoSumSorted(nums, target) {
-let left = 0, right = nums.length - 1;
-while (left < right) {
-const sum = nums[left] + nums[right];
-if (sum === target) return [left, right];
-if (sum < target) left++; // sum too small, increase left value
-else right--; // sum too large, decrease right value
-}
-return [-1, -1];
+  let left = 0, right = nums.length - 1;
+  while (left < right) {
+    const sum = nums[left] + nums[right];
+    if (sum === target) return [left, right];
+    if (sum < target) left++;   // sum too small, increase left value
+    else right--;               // sum too large, decrease right value
+  }
+  return [-1, -1];
 }
 ```
 
@@ -377,25 +377,23 @@ O(n²).
 
 ```js
 function threeSum(nums) {
-nums.sort((a, b) => a - b);
-const result = [];
-for (let i = 0; i < nums.length - 2; i++) {
-if (i > 0 && nums[i] === nums[i - 1]) continue; *// skip
-duplicates*
-let left = i + 1, right = nums.length - 1;
-while (left < right) {
-const sum = nums[i] + nums[left] + nums[right];
-if (sum === 0) {
-result.push([nums[i], nums[left], nums[right]]);
-while (left < right && nums[left] === nums[left + 1]) left++;
-while (left < right && nums[right] === nums[right - 1])
-right--;
-left++; right--;
-} else if (sum < 0) left++;
-else right--;
-}
-}
-return result;
+  nums.sort((a, b) => a - b);
+  const result = [];
+  for (let i = 0; i < nums.length - 2; i++) {
+    if (i > 0 && nums[i] === nums[i - 1]) continue; // skip duplicates
+    let left = i + 1, right = nums.length - 1;
+    while (left < right) {
+      const sum = nums[i] + nums[left] + nums[right];
+      if (sum === 0) {
+        result.push([nums[i], nums[left], nums[right]]);
+        while (left < right && nums[left] === nums[left + 1]) left++;
+        while (left < right && nums[right] === nums[right - 1]) right--;
+        left++; right--;
+      } else if (sum < 0) left++;
+      else right--;
+    }
+  }
+  return result;
 }
 ```
 
@@ -435,19 +433,18 @@ Two flavors:
 
 ```js
 function lengthOfLongestSubstring(s) {
-const seen = new Map();
-let left = 0, best = 0;
-for (let right = 0; right < s.length; right++) {
-const ch = s[right];
-*// If we've seen this char inside the current window, jump left past
-it*
-if (seen.has(ch) && seen.get(ch) >= left) {
-left = seen.get(ch) + 1;
-}
-seen.set(ch, right);
-best = Math.max(best, right - left + 1);
-}
-return best;
+  const seen = new Map();
+  let left = 0, best = 0;
+  for (let right = 0; right < s.length; right++) {
+    const ch = s[right];
+    // If we've seen this char inside the current window, jump left past it
+    if (seen.has(ch) && seen.get(ch) >= left) {
+      left = seen.get(ch) + 1;
+    }
+    seen.set(ch, right);
+    best = Math.max(best, right - left + 1);
+  }
+  return best;
 }
 ```
 
@@ -463,30 +460,29 @@ all characters of t (with multiplicity). The variable-window template:
 
 ```js
 function minWindow(s, t) {
-const need = new Map();
-for (const c of t) need.set(c, (need.get(c) || 0) + 1);
-let required = need.size; // distinct chars needed
-let formed = 0; // distinct chars currently satisfied
-const have = new Map();
-let left = 0, bestLen = Infinity, bestLeft = 0;
-for (let right = 0; right < s.length; right++) {
-const c = s[right];
-have.set(c, (have.get(c) || 0) + 1);
-if (need.has(c) && have.get(c) === need.get(c)) formed++;
-// Contract from the left while window is still valid
-while (formed === required) {
-if (right - left + 1 < bestLen) {
-bestLen = right - left + 1;
-bestLeft = left;
-}
-const lc = s[left];
-have.set(lc, have.get(lc) - 1);
-if (need.has(lc) && have.get(lc) < need.get(lc)) formed--;
-left++;
-}
-}
-return bestLen === Infinity ? "" : s.substring(bestLeft,
-bestLeft + bestLen);
+  const need = new Map();
+  for (const c of t) need.set(c, (need.get(c) || 0) + 1);
+  let required = need.size;  // distinct chars needed
+  let formed = 0;            // distinct chars currently satisfied
+  const have = new Map();
+  let left = 0, bestLen = Infinity, bestLeft = 0;
+  for (let right = 0; right < s.length; right++) {
+    const c = s[right];
+    have.set(c, (have.get(c) || 0) + 1);
+    if (need.has(c) && have.get(c) === need.get(c)) formed++;
+    // Contract from the left while window is still valid
+    while (formed === required) {
+      if (right - left + 1 < bestLen) {
+        bestLen = right - left + 1;
+        bestLeft = left;
+      }
+      const lc = s[left];
+      have.set(lc, have.get(lc) - 1);
+      if (need.has(lc) && have.get(lc) < need.get(lc)) formed--;
+      left++;
+    }
+  }
+  return bestLen === Infinity ? "" : s.substring(bestLeft, bestLeft + bestLen);
 }
 ```
 
@@ -519,14 +515,13 @@ errors.
 
 ```js
 function binarySearch(arr, target) {
-let left = 0, right = arr.length; // half-open: [left, right)
-while (left < right) {
-const mid = left + Math.floor((right - left) / 2);
-if (arr[mid] < target) left = mid + 1;
-else right = mid;
-}
-return left; *// insertion point; check arr[left] === target
-separately*
+  let left = 0, right = arr.length; // half-open: [left, right)
+  while (left < right) {
+    const mid = left + Math.floor((right - left) / 2);
+    if (arr[mid] < target) left = mid + 1;
+    else right = mid;
+  }
+  return left; // insertion point; check arr[left] === target separately
 }
 ```
 
@@ -572,25 +567,25 @@ limit is reached. Find the minimum ship capacity.
 
 ```js
 function shipWithinDays(weights, D) {
-// Answer space: [max(weights), sum(weights)]
-// Lower bound: must fit the heaviest single package
-// Upper bound: ship everything in one day
-let left = Math.max(...weights);
-let right = weights.reduce((a, b) => a + b, 0);
-const canShip = (capacity) => {
-let days = 1, load = 0;
-for (const w of weights) {
-if (load + w > capacity) { days++; load = 0; }
-load += w;
-}
-return days <= D;
-};
-while (left < right) {
-const mid = left + Math.floor((right - left) / 2);
-if (canShip(mid)) right = mid; // mid works, try smaller
-else left = mid + 1; // mid too small, try larger
-}
-return left;
+  // Answer space: [max(weights), sum(weights)]
+  // Lower bound: must fit the heaviest single package
+  // Upper bound: ship everything in one day
+  let left = Math.max(...weights);
+  let right = weights.reduce((a, b) => a + b, 0);
+  const canShip = (capacity) => {
+    let days = 1, load = 0;
+    for (const w of weights) {
+      if (load + w > capacity) { days++; load = 0; }
+      load += w;
+    }
+    return days <= D;
+  };
+  while (left < right) {
+    const mid = left + Math.floor((right - left) / 2);
+    if (canShip(mid)) right = mid;  // mid works, try smaller
+    else left = mid + 1;            // mid too small, try larger
+  }
+  return left;
 }
 ```
 
@@ -646,20 +641,20 @@ processing it, blowing up both time and memory.
 
 ```js
 function shortestPath(graph, start, end) {
-if (start === end) return 0;
-const visited = new Set([start]);
-const queue = [[start, 0]]; // [node, distance]
-while (queue.length) {
-const [node, dist] = queue.shift(); // see note below
-for (const neighbor of graph.get(node) || []) {
-if (neighbor === end) return dist + 1;
-if (!visited.has(neighbor)) {
-visited.add(neighbor);
-queue.push([neighbor, dist + 1]);
-}
-}
-}
-return -1;
+  if (start === end) return 0;
+  const visited = new Set([start]);
+  const queue = [[start, 0]]; // [node, distance]
+  while (queue.length) {
+    const [node, dist] = queue.shift(); // see note below
+    for (const neighbor of graph.get(node) || []) {
+      if (neighbor === end) return dist + 1;
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push([neighbor, dist + 1]);
+      }
+    }
+  }
+  return -1;
 }
 ```
 
@@ -680,23 +675,22 @@ same but you process the queue one level at a time:
 
 ```js
 function levelOrder(root) {
-if (!root) return [];
-const result = [];
-let queue = [root];
-while (queue.length) {
-const levelSize = queue.length; *// snapshot size before
-iterating*
-const level = [];
-for (let i = 0; i < levelSize; i++) {
-const node = queue[i];
-level.push(node.val);
-if (node.left) queue.push(node.left);
-if (node.right) queue.push(node.right);
-}
-queue = queue.slice(levelSize); // pop the level we just processed
-result.push(level);
-}
-return result;
+  if (!root) return [];
+  const result = [];
+  let queue = [root];
+  while (queue.length) {
+    const levelSize = queue.length; // snapshot size before iterating
+    const level = [];
+    for (let i = 0; i < levelSize; i++) {
+      const node = queue[i];
+      level.push(node.val);
+      if (node.left) queue.push(node.left);
+      if (node.right) queue.push(node.right);
+    }
+    queue = queue.slice(levelSize); // pop the level we just processed
+    result.push(level);
+  }
+  return result;
 }
 ```
 
@@ -713,13 +707,13 @@ recursion.
 
 ```js
 function dfs(node, visited = new Set()) {
-if (!node || visited.has(node)) return;
-visited.add(node);
-// pre-order work here
-for (const neighbor of graph.get(node) || []) {
-dfs(neighbor, visited);
-}
-// post-order work here
+  if (!node || visited.has(node)) return;
+  visited.add(node);
+  // pre-order work here
+  for (const neighbor of graph.get(node) || []) {
+    dfs(neighbor, visited);
+  }
+  // post-order work here
 }
 ```
 
@@ -738,18 +732,17 @@ any two nodes, in number of edges).
 
 ```js
 function diameterOfBinaryTree(root) {
-let diameter = 0;
-function depth(node) {
-if (!node) return 0;
-const left = depth(node.left);
-const right = depth(node.right);
-// longest path through this node = left + right
-diameter = Math.max(diameter, left + right);
-return 1 + Math.max(left, right); *// depth of subtree rooted
-here*
-}
-depth(root);
-return diameter;
+  let diameter = 0;
+  function depth(node) {
+    if (!node) return 0;
+    const left = depth(node.left);
+    const right = depth(node.right);
+    // longest path through this node = left + right
+    diameter = Math.max(diameter, left + right);
+    return 1 + Math.max(left, right); // depth of subtree rooted here
+  }
+  depth(root);
+  return diameter;
 }
 ```
 
@@ -770,27 +763,26 @@ Kahn's is easier to write under pressure and detects cycles for free
 
 ```js
 function topologicalSort(numNodes, edges) {
-const adj = new Map();
-const inDegree = new Array(numNodes).fill(0);
-for (let i = 0; i < numNodes; i++) adj.set(i, []);
-for (const [u, v] of edges) {
-adj.get(u).push(v);
-inDegree[v]++;
-}
-const queue = [];
-for (let i = 0; i < numNodes; i++) {
-if (inDegree[i] === 0) queue.push(i);
-}
-const order = [];
-while (queue.length) {
-const node = queue.shift();
-order.push(node);
-for (const next of adj.get(node)) {
-if (--inDegree[next] === 0) queue.push(next);
-}
-}
-return order.length === numNodes ? order : []; *// empty =
-cycle*
+  const adj = new Map();
+  const inDegree = new Array(numNodes).fill(0);
+  for (let i = 0; i < numNodes; i++) adj.set(i, []);
+  for (const [u, v] of edges) {
+    adj.get(u).push(v);
+    inDegree[v]++;
+  }
+  const queue = [];
+  for (let i = 0; i < numNodes; i++) {
+    if (inDegree[i] === 0) queue.push(i);
+  }
+  const order = [];
+  while (queue.length) {
+    const node = queue.shift();
+    order.push(node);
+    for (const next of adj.get(node)) {
+      if (--inDegree[next] === 0) queue.push(next);
+    }
+  }
+  return order.length === numNodes ? order : []; // empty = cycle
 }
 ```
 
@@ -809,24 +801,21 @@ shortest distance.
 
 ```js
 function dijkstra(graph, start) {
-const dist = new Map();
-dist.set(start, 0);
-const heap = [[0, start]]; *// [distance, node] --- pretend
-this is a min-heap*
-while (heap.length) {
-const [d, node] = heapPop(heap);
-if (d > (dist.get(node) ?? Infinity)) continue; *// stale
-entry*
-for (const [neighbor, weight] of graph.get(node) ||
-[]) {
-const newDist = d + weight;
-if (newDist < (dist.get(neighbor) ?? Infinity)) {
-dist.set(neighbor, newDist);
-heapPush(heap, [newDist, neighbor]);
-}
-}
-}
-return dist;
+  const dist = new Map();
+  dist.set(start, 0);
+  const heap = [[0, start]]; // [distance, node] --- pretend this is a min-heap
+  while (heap.length) {
+    const [d, node] = heapPop(heap);
+    if (d > (dist.get(node) ?? Infinity)) continue; // stale entry
+    for (const [neighbor, weight] of graph.get(node) || []) {
+      const newDist = d + weight;
+      if (newDist < (dist.get(neighbor) ?? Infinity)) {
+        dist.set(neighbor, newDist);
+        heapPush(heap, [newDist, neighbor]);
+      }
+    }
+  }
+  return dist;
 }
 ```
 
@@ -842,30 +831,29 @@ Two operations on a partition of n elements into disjoint sets:
 
 ```js
 class UnionFind {
-constructor(n) {
-this.parent = Array.from({ length: n }, (_, i) => i);
-this.rank = new Array(n).fill(0);
-this.components = n;
-}
-find(x) {
-if (this.parent[x] !== x) {
-this.parent[x] = this.find(this.parent[x]); *// path
-compression*
-}
-return this.parent[x];
-}
-union(x, y) {
-const px = this.find(x), py = this.find(y);
-if (px === py) return false; // already connected
-// union by rank: attach smaller tree under larger
-if (this.rank[px] < this.rank[py])
-this.parent[px] = py;
-else if (this.rank[px] > this.rank[py])
-this.parent[py] = px;
-else { this.parent[py] = px; this.rank[px]++; }
-this.components--;
-return true;
-}
+  constructor(n) {
+    this.parent = Array.from({ length: n }, (_, i) => i);
+    this.rank = new Array(n).fill(0);
+    this.components = n;
+  }
+  find(x) {
+    if (this.parent[x] !== x) {
+      this.parent[x] = this.find(this.parent[x]); // path compression
+    }
+    return this.parent[x];
+  }
+  union(x, y) {
+    const px = this.find(x), py = this.find(y);
+    if (px === py) return false; // already connected
+    // union by rank: attach smaller tree under larger
+    if (this.rank[px] < this.rank[py])
+      this.parent[px] = py;
+    else if (this.rank[px] > this.rank[py])
+      this.parent[py] = px;
+    else { this.parent[py] = px; this.rank[px]++; }
+    this.components--;
+    return true;
+  }
 }
 ```
 
@@ -923,13 +911,13 @@ longest increasing subsequence (O(n²) version), maximum subarray
 ```js
 // House robber: max sum of non-adjacent elements
 function rob(nums) {
-let prev2 = 0, prev1 = 0; // dp[i-2], dp[i-1]
-for (const n of nums) {
-const curr = Math.max(prev1, prev2 + n);
-prev2 = prev1;
-prev1 = curr;
-}
-return prev1;
+  let prev2 = 0, prev1 = 0; // dp[i-2], dp[i-1]
+  for (const n of nums) {
+    const curr = Math.max(prev1, prev2 + n);
+    prev2 = prev1;
+    prev1 = curr;
+  }
+  return prev1;
 }
 ```
 
@@ -946,27 +934,24 @@ longest common subsequence, edit distance.
 ```js
 // Edit distance (Levenshtein): min ops to transform word1 → word2
 function editDistance(w1, w2) {
-const m = w1.length, n = w2.length;
-const dp = Array.from({ length: m + 1 }, () => new Array(n +
-1).fill(0));
-for (let i = 0; i <= m; i++) dp[i][0] = i; *// delete i
-chars*
-for (let j = 0; j <= n; j++) dp[0][j] = j; *// insert j
-chars*
-for (let i = 1; i <= m; i++) {
-for (let j = 1; j <= n; j++) {
-if (w1[i-1] === w2[j-1]) {
-dp[i][j] = dp[i-1][j-1];
-} else {
-dp[i][j] = 1 + Math.min(
-dp[i-1][j], // delete from w1
-dp[i][j-1], // insert into w1
-dp[i-1][j-1] // replace
-);
-}
-}
-}
-return dp[m][n];
+  const m = w1.length, n = w2.length;
+  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i; // delete i chars
+  for (let j = 0; j <= n; j++) dp[0][j] = j; // insert j chars
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (w1[i-1] === w2[j-1]) {
+        dp[i][j] = dp[i-1][j-1];
+      } else {
+        dp[i][j] = 1 + Math.min(
+          dp[i-1][j],    // delete from w1
+          dp[i][j-1],    // insert into w1
+          dp[i-1][j-1]   // replace
+        );
+      }
+    }
+  }
+  return dp[m][n];
 }
 ```
 
@@ -983,14 +968,14 @@ once) and unbounded knapsack (each item used any number of times).
 ```js
 // Coin change: fewest coins to make 'amount' (unbounded knapsack)
 function coinChange(coins, amount) {
-const dp = new Array(amount + 1).fill(Infinity);
-dp[0] = 0;
-for (let a = 1; a <= amount; a++) {
-for (const c of coins) {
-if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
-}
-}
-return dp[amount] === Infinity ? -1 : dp[amount];
+  const dp = new Array(amount + 1).fill(Infinity);
+  dp[0] = 0;
+  for (let a = 1; a <= amount; a++) {
+    for (const c of coins) {
+      if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
+    }
+  }
+  return dp[amount] === Infinity ? -1 : dp[amount];
 }
 ```
 
@@ -1015,22 +1000,20 @@ because dp[i][j] depends on shorter intervals contained within.
 ```js
 // Longest palindromic substring length
 function longestPalindromeLen(s) {
-const n = s.length;
-const dp = Array.from({ length: n }, () => new
-Array(n).fill(false));
-let best = 1;
-for (let i = 0; i < n; i++) dp[i][i] = true; *//
-length 1*
-for (let len = 2; len <= n; len++) {
-for (let i = 0; i + len - 1 < n; i++) {
-const j = i + len - 1;
-if (s[i] === s[j] && (len === 2 || dp[i+1][j-1])) {
-dp[i][j] = true;
-best = Math.max(best, len);
-}
-}
-}
-return best;
+  const n = s.length;
+  const dp = Array.from({ length: n }, () => new Array(n).fill(false));
+  let best = 1;
+  for (let i = 0; i < n; i++) dp[i][i] = true; // length 1
+  for (let len = 2; len <= n; len++) {
+    for (let i = 0; i + len - 1 < n; i++) {
+      const j = i + len - 1;
+      if (s[i] === s[j] && (len === 2 || dp[i+1][j-1])) {
+        dp[i][j] = true;
+        best = Math.max(best, len);
+      }
+    }
+  }
+  return best;
 }
 ```
 
@@ -1093,16 +1076,15 @@ and you can write any of them in two minutes.
 
 ```js
 function backtrack(state, choices, result) {
-if (isComplete(state)) {
-result.push([...state]); *// CRITICAL: clone, don't push
-reference*
-return;
-}
-for (const choice of validChoices(state, choices)) {
-state.push(choice); // make choice
-backtrack(state, choices, result);
-state.pop(); // undo choice
-}
+  if (isComplete(state)) {
+    result.push([...state]); // CRITICAL: clone, don't push reference
+    return;
+  }
+  for (const choice of validChoices(state, choices)) {
+    state.push(choice);              // make choice
+    backtrack(state, choices, result);
+    state.pop();                     // undo choice
+  }
 }
 ```
 
@@ -1115,24 +1097,24 @@ recursing).
 
 ```js
 function permutations(nums) {
-const result = [];
-const used = new Array(nums.length).fill(false);
-function backtrack(current) {
-if (current.length === nums.length) {
-result.push([...current]);
-return;
-}
-for (let i = 0; i < nums.length; i++) {
-if (used[i]) continue;
-used[i] = true;
-current.push(nums[i]);
-backtrack(current);
-current.pop();
-used[i] = false;
-}
-}
-backtrack([]);
-return result;
+  const result = [];
+  const used = new Array(nums.length).fill(false);
+  function backtrack(current) {
+    if (current.length === nums.length) {
+      result.push([...current]);
+      return;
+    }
+    for (let i = 0; i < nums.length; i++) {
+      if (used[i]) continue;
+      used[i] = true;
+      current.push(nums[i]);
+      backtrack(current);
+      current.pop();
+      used[i] = false;
+    }
+  }
+  backtrack([]);
+  return result;
 }
 ```
 
@@ -1144,17 +1126,17 @@ index advances each recursion rather than restarting from 0.
 
 ```js
 function subsets(nums) {
-const result = [];
-function backtrack(start, current) {
-result.push([...current]); // every state is a valid subset
-for (let i = start; i < nums.length; i++) {
-current.push(nums[i]);
-backtrack(i + 1, current); // i + 1, not start + 1
-current.pop();
-}
-}
-backtrack(0, []);
-return result;
+  const result = [];
+  function backtrack(start, current) {
+    result.push([...current]); // every state is a valid subset
+    for (let i = start; i < nums.length; i++) {
+      current.push(nums[i]);
+      backtrack(i + 1, current); // i + 1, not start + 1
+      current.pop();
+    }
+  }
+  backtrack(0, []);
+  return result;
 }
 ```
 
@@ -1165,28 +1147,27 @@ other), and pruning matters enormously for performance.
 
 ```js
 function solveNQueens(n) {
-const result = [];
-const cols = new Set(), diag1 = new Set(), diag2 = new
-Set();
-const board = [];
-function backtrack(row) {
-if (row === n) {
-result.push(board.map(c =>
-'.'.repeat(c) + 'Q' + '.'.repeat(n - c - 1)));
-return;
-}
-for (let c = 0; c < n; c++) {
-if (cols.has(c) || diag1.has(row - c) || diag2.has(row + c))
-continue;
-cols.add(c); diag1.add(row - c); diag2.add(row + c);
-board.push(c);
-backtrack(row + 1);
-board.pop();
-cols.delete(c); diag1.delete(row - c); diag2.delete(row + c);
-}
-}
-backtrack(0);
-return result;
+  const result = [];
+  const cols = new Set(), diag1 = new Set(), diag2 = new Set();
+  const board = [];
+  function backtrack(row) {
+    if (row === n) {
+      result.push(board.map(c =>
+        '.'.repeat(c) + 'Q' + '.'.repeat(n - c - 1)));
+      return;
+    }
+    for (let c = 0; c < n; c++) {
+      if (cols.has(c) || diag1.has(row - c) || diag2.has(row + c))
+        continue;
+      cols.add(c); diag1.add(row - c); diag2.add(row + c);
+      board.push(c);
+      backtrack(row + 1);
+      board.pop();
+      cols.delete(c); diag1.delete(row - c); diag2.delete(row + c);
+    }
+  }
+  backtrack(0);
+  return result;
 }
 ```
 
@@ -1242,14 +1223,12 @@ implement one or describe one and hand-wave.
 ```js
 // Maintain a min-heap of size k. The top is the k-th largest.
 function findKthLargest(nums, k) {
-const heap = []; *// pretend this is a min-heap with O(log n)
-push/pop*
-for (const n of nums) {
-heapPush(heap, n);
-if (heap.length > k) heapPop(heap);
-}
-return heap[0]; *// top of min-heap = smallest of k largest =
-k-th largest*
+  const heap = []; // pretend this is a min-heap with O(log n) push/pop
+  for (const n of nums) {
+    heapPush(heap, n);
+    if (heap.length > k) heapPop(heap);
+  }
+  return heap[0]; // top of min-heap = smallest of k largest = k-th largest
 }
 ```
 
@@ -1267,21 +1246,18 @@ next/previous greater/smaller element" problems and is the single most
 efficient technique for them: O(n) where the brute force is O(n²).
 
 ```js
-*// Next greater element: result[i] is the first j > i with
-nums[j] > nums[i],*
+// Next greater element: result[i] is the first j > i with nums[j] > nums[i],
 // or -1 if no such j exists.
 function nextGreaterElement(nums) {
-const result = new Array(nums.length).fill(-1);
-const stack = []; *// indices, monotonically decreasing by
-value*
-for (let i = 0; i < nums.length; i++) {
-while (stack.length && nums[stack[stack.length - 1]] <
-nums[i]) {
-result[stack.pop()] = nums[i];
-}
-stack.push(i);
-}
-return result;
+  const result = new Array(nums.length).fill(-1);
+  const stack = []; // indices, monotonically decreasing by value
+  for (let i = 0; i < nums.length; i++) {
+    while (stack.length && nums[stack[stack.length - 1]] < nums[i]) {
+      result[stack.pop()] = nums[i];
+    }
+    stack.push(i);
+  }
+  return result;
 }
 ```
 
@@ -1303,18 +1279,17 @@ max of the current window, with O(1) updates as the window slides.
 ```js
 // Sliding window maximum of size k
 function maxSlidingWindow(nums, k) {
-const dq = []; // indices, values monotonically decreasing
-const result = [];
-for (let i = 0; i < nums.length; i++) {
-// Remove indices outside the window
-while (dq.length && dq[0] <= i - k) dq.shift();
-// Maintain decreasing order
-while (dq.length && nums[dq[dq.length - 1]] < nums[i])
-dq.pop();
-dq.push(i);
-if (i >= k - 1) result.push(nums[dq[0]]);
-}
-return result;
+  const dq = []; // indices, values monotonically decreasing
+  const result = [];
+  for (let i = 0; i < nums.length; i++) {
+    // Remove indices outside the window
+    while (dq.length && dq[0] <= i - k) dq.shift();
+    // Maintain decreasing order
+    while (dq.length && nums[dq[dq.length - 1]] < nums[i]) dq.pop();
+    dq.push(i);
+    if (i >= k - 1) result.push(nums[dq[0]]);
+  }
+  return result;
 }
 ```
 
@@ -1327,31 +1302,31 @@ autocomplete, or word search.
 
 ```js
 class Trie {
-constructor() { this.root = {}; }
-insert(word) {
-let node = this.root;
-for (const c of word) {
-if (!node[c]) node[c] = {};
-node = node[c];
-}
-node.isEnd = true;
-}
-search(word) {
-let node = this.root;
-for (const c of word) {
-if (!node[c]) return false;
-node = node[c];
-}
-return node.isEnd === true;
-}
-startsWith(prefix) {
-let node = this.root;
-for (const c of prefix) {
-if (!node[c]) return false;
-node = node[c];
-}
-return true;
-}
+  constructor() { this.root = {}; }
+  insert(word) {
+    let node = this.root;
+    for (const c of word) {
+      if (!node[c]) node[c] = {};
+      node = node[c];
+    }
+    node.isEnd = true;
+  }
+  search(word) {
+    let node = this.root;
+    for (const c of word) {
+      if (!node[c]) return false;
+      node = node[c];
+    }
+    return node.isEnd === true;
+  }
+  startsWith(prefix) {
+    let node = this.root;
+    for (const c of prefix) {
+      if (!node[c]) return false;
+      node = node[c];
+    }
+    return true;
+  }
 }
 ```
 
@@ -1364,15 +1339,14 @@ powerful when combined with hash maps.
 ```js
 // Subarray sum equals k: count subarrays whose sum is exactly k
 function subarraySum(nums, k) {
-const count = new Map([[0, 1]]); *// prefix sum 0 occurs
-once (empty)*
-let sum = 0, result = 0;
-for (const n of nums) {
-sum += n;
-if (count.has(sum - k)) result += count.get(sum - k);
-count.set(sum, (count.get(sum) || 0) + 1);
-}
-return result;
+  const count = new Map([[0, 1]]); // prefix sum 0 occurs once (empty)
+  let sum = 0, result = 0;
+  for (const n of nums) {
+    sum += n;
+    if (count.has(sum - k)) result += count.get(sum - k);
+    count.set(sum, (count.get(sum) || 0) + 1);
+  }
+  return result;
 }
 ```
 
