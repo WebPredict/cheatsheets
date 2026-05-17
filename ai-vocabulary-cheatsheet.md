@@ -107,6 +107,40 @@ network that get adjusted during training. A model's parameter count
 though far from a perfect one. Modern frontier models have hundreds of
 billions to trillions of parameters.
 
+**Foundational ML concepts**
+
+**Supervised learning ---** Training a model on labeled data --- input-output pairs where the correct answer is known. The model learns to map inputs to outputs. Most fine-tuning (SFT) is supervised. Classification ("is this spam?") and regression ("predict the price") are the two main flavors.
+
+**Unsupervised learning ---** Training on data without labels. The model finds structure on its own --- clusters, patterns, representations. Pre-training an LLM is technically self-supervised (a variant of unsupervised): the "label" is the next token, derived from the text itself rather than human annotation.
+
+**Transfer learning ---** Using a model trained on one task as the starting point for another. The entire pre-train-then-fine-tune paradigm is transfer learning: general knowledge transfers from the pre-training corpus to the specific downstream task. The reason you don't have to train from scratch for every application.
+
+**Loss function ---** A mathematical function that measures how wrong the model's predictions are. Training is the process of minimizing loss. Cross-entropy loss is standard for language models (measures how far the predicted token probabilities are from the actual next token). Lower loss means the model's predictions are closer to reality.
+
+**Gradient ---** The direction and magnitude in which each parameter should change to reduce the loss. Computed for every parameter on every training step. The gradient points "uphill" (toward higher loss); you step in the opposite direction.
+
+**Backpropagation ---** The algorithm that computes gradients efficiently by propagating the loss backward through the network, layer by layer. Without it, computing gradients for billions of parameters would be intractable. Every modern neural network trains with backpropagation.
+
+**Optimizer (SGD, Adam) ---** The algorithm that uses gradients to update parameters. SGD (stochastic gradient descent) is the simplest: step in the direction opposite the gradient. Adam and AdamW are the standard in practice --- they adapt the step size per parameter and add momentum. AdamW is the default for transformer training.
+
+**Epoch ---** One complete pass through the entire training dataset. Pre-training large models often runs for less than one epoch (the dataset is so large that one pass is enough); fine-tuning typically runs for 1--5 epochs. Too many epochs leads to overfitting.
+
+**Overfitting ---** When a model memorizes training data rather than learning general patterns. Performance on training data is high but performance on new data degrades. Signs: training loss keeps dropping but validation loss starts rising. Defenses include more data, regularization, dropout, and early stopping.
+
+**Activation function ---** A nonlinear function applied after each layer's linear transformation. Without it, stacking layers would collapse to a single linear operation. ReLU, GELU, and SiLU/Swish are common choices in transformers. "Activations" also refers informally to the intermediate values flowing through the network --- the things interpretability researchers study.
+
+**Softmax ---** A function that converts a vector of raw scores (logits) into a probability distribution --- values between 0 and 1 that sum to 1. The final step in token generation: the model produces logits for every token in its vocabulary, softmax converts them to probabilities, and a token is sampled.
+
+**Dropout ---** A regularization technique that randomly zeroes out a fraction of activations during training, forcing the network to not rely on any single pathway. Reduces overfitting. Typically disabled at inference time. Less prominent in modern LLM training than in earlier deep learning, but still used in some architectures.
+
+**Probability distribution ---** A function describing the likelihood of each possible outcome. LLMs generate a probability distribution over their vocabulary at each step --- "the" might have 12% probability, "a" might have 8%, etc. Temperature controls how "peaked" or "flat" this distribution is: low temperature concentrates probability on the top tokens (more deterministic), high temperature spreads it out (more creative/random).
+
+**Pre-transformer architectures**
+
+**RNN (Recurrent Neural Network) ---** An architecture that processes sequences one element at a time, maintaining a hidden state that carries information forward. The dominant sequence model before transformers. Fundamental limitation: information from early tokens degrades as the sequence gets longer (the "vanishing gradient" problem), making them poor at capturing long-range dependencies.
+
+**LSTM (Long Short-Term Memory) ---** An improved RNN with explicit "gates" that control what information to remember and forget, partially solving the vanishing gradient problem. Powered machine translation, speech recognition, and early language models (2014--2017). Replaced by transformers because LSTMs process tokens sequentially and can't be parallelized across GPUs efficiently.
+
 **The training process**
 
 **Pre-training ---** The expensive stage where a model learns general
@@ -168,6 +202,8 @@ paper (2022) is the canonical reference. The original observation ---
 that bigger models with more data reliably get better --- fueled the
 trillion-dollar AI capex wave. There's active debate about whether the
 curves are bending.
+
+**Inference ---** Using a trained model to produce outputs --- generating text, classifying an image, answering a question. Distinct from training: training updates weights, inference only reads them. The cost, latency, and hardware requirements of inference are different from training and increasingly dominate industry economics, since a model is trained once but serves inference millions of times.
 
 **Chapter 2 --- Modern training and inference techniques**
 
